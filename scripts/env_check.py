@@ -2,20 +2,25 @@
 env_check.py — verify the PyTorch + Triton stack on a Modal GPU and take a
 first bandwidth / FLOPs measurement.
 
-Usage:
-    modal run scripts/env_check.py              # default: L4
-    GPU=A10 modal run scripts/env_check.py      # any Modal GPU string: T4, L4, A10, A100, H100 ...
+Usage (from the repo root):
+    uv run modal run scripts/env_check.py              # default: L4
+    GPU=A10 uv run modal run scripts/env_check.py      # any Modal GPU string: T4, L4, A10, A100, H100 ...
 
-The first run builds the container image (installs torch), which takes a few
-minutes; later runs reuse the cached image.
+The container installs exactly the versions pinned in uv.lock, so the GPU
+environment matches the local one. The first run builds the image (installs
+torch), which takes a few minutes; later runs reuse the cached image.
 """
 import os
+from pathlib import Path
 
 import modal
 
 GPU = os.environ.get("GPU", "L4")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]  # holds pyproject.toml + uv.lock
 
-image = modal.Image.debian_slim(python_version="3.12").pip_install("torch", "numpy")
+image = modal.Image.debian_slim(python_version="3.12").uv_sync(
+    str(PROJECT_ROOT), extra_options="--no-dev"  # dev tools (modal, pytest) stay local
+)
 app = modal.App("mini-vllm-env-check", image=image)
 
 # torch / Triton only exist inside the container (no CUDA build on macOS),

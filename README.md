@@ -44,13 +44,13 @@ tests/          correctness tests against Hugging Face
 
 ## Quickstart
 
-GPU work runs on Modal, so all you need locally is Python and the Modal client:
+Dependencies are managed with [uv](https://docs.astral.sh/uv/) and pinned in `uv.lock`. GPU work runs on Modal, whose container image is built from the same lock file, so the local and GPU environments match.
 
 ```bash
-pip install modal
-modal setup                                  # one-time browser login
-modal run scripts/env_check.py               # PyTorch + Triton sanity check on an L4
-GPU=A10 modal run scripts/env_check.py       # same check on an A10
+uv sync                                          # create .venv with Python 3.12 + locked deps
+uv run modal setup                               # one-time browser login
+uv run modal run scripts/env_check.py            # PyTorch + Triton sanity check on an L4
+GPU=A10 uv run modal run scripts/env_check.py    # same check on an A10
 ```
 
 `env_check.py` prints the GPU, driver, and torch/Triton versions, checks a Triton vector-add kernel against PyTorch, and measures achieved DRAM bandwidth and fp16 matmul TFLOPS.

@@ -1,0 +1,20 @@
+[project]
+name = "mini-vllm"
+version = "0.0.1"
+description = "A small LLM inference engine written from scratch: paged KV cache, continuous batching, Triton kernels."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Adrian Yao" }]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch>=2.8",
+    "transformers>=4.56",
+    "safetensors",
+    "numpy",
+]
+
+[dependency-groups]
+dev = [
+    "modal>=1.1",
+    "pytest",
+]
