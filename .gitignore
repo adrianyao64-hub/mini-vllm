@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Model weights / large artifacts (download at runtime, never commit)
+*.safetensors
+*.bin
+*.pt
+*.pth
+checkpoints/
+hf_cache/
+
+# Profiling outputs
+*.nsys-rep
+*.ncu-rep
+*.qdrep
+*.json.gz
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
