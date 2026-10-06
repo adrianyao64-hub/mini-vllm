@@ -8,14 +8,14 @@ A small LLM inference engine written from scratch — paged KV cache, continuous
 
 [nano-vllm](https://github.com/GeeeekExplorer/nano-vllm) showed that a ~1,200-line engine can match vLLM's throughput. This project rebuilds the same core from scratch and goes further in four places:
 
-- **Own Triton paged-attention kernel** instead of relying on FlashAttention / FlashInfer.
-- **Ablations for every optimization** (CUDA Graphs, `torch.compile`, paged KV, batching policy): each one measured on and off.
-- **Multi-LoRA serving**: serve several LoRA adapters on one base model without merging weights (in the spirit of Punica / S-LoRA).
-- **Reproducible benchmarks**: same hardware, same workload, compared against HF `generate`, nano-vllm, and vLLM.
+- **SLO-aware, reproducible benchmarks**: goodput under latency SLOs (not just peak throughput), same hardware and workload, compared against HF `generate`, nano-vllm, and vLLM.
+- **Ablations for every optimization** (CUDA Graphs, `torch.compile`, paged KV, batching policy): each one measured on and off, with profiling to explain the result.
+- **Own Triton paged-attention kernel** instead of relying on FlashAttention / FlashInfer, analyzed against the memory-bandwidth roofline.
+- **Hybrid-architecture support**: serve Qwen3.5's mix of Gated DeltaNet (linear attention) and full-attention layers, managing paged KV blocks and fixed-size recurrent state side by side.
 
 ## Models & hardware
 
-- **Models:** Qwen3-0.6B (primary — same setting as nano-vllm's public benchmark), Qwen3-1.7B. The config loader also handles Qwen2.5.
+- **Models:** Qwen3-0.6B (primary — same setting as nano-vllm's public benchmark), Qwen3-1.7B. Qwen3.5-0.8B (hybrid linear/full attention, text-only) is added in M7.
 - **Hardware:** single 24 GB GPU on [Modal](https://modal.com) — L4 for day-to-day development, A10 for the reported benchmarks.
 
 ## Roadmap
@@ -28,7 +28,7 @@ A small LLM inference engine written from scratch — paged KV cache, continuous
 | M4 | Continuous batching and scheduler | Nov 8 |
 | M5 | Paged KV cache (block manager + block tables) | Nov 15 |
 | M6 | Triton paged-attention kernel | Nov 29 |
-| M7 | CUDA Graphs + `torch.compile` for decode; multi-LoRA serving | Dec 13 |
+| M7 | CUDA Graphs + `torch.compile` for decode; hybrid-model support (Qwen3.5) | Dec 13 |
 | M8 | Benchmark & profiling report | Dec 20 |
 | M10 | OpenAI-compatible API server (`/v1/chat/completions`, streaming) | Jan 3 |
 

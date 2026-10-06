@@ -18,3 +18,7 @@ dev = [
     "modal>=1.1",
     "pytest",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
