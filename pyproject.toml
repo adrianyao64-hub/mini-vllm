@@ -22,3 +22,8 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+    "slow: needs the real Qwen3-0.6B checkpoint and takes minutes on CPU; run with `uv run pytest -m slow`",
+]
+# Fast tests by default. A `-m ...` on the command line comes later and overrides this.
+addopts = "-m 'not slow'"

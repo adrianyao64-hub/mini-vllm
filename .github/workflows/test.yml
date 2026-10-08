@@ -1,0 +1,27 @@
+# Fast test suite on every push / PR (CPU only).
+# Tests that need checkpoints/Qwen3-0.6B skip themselves here (the 1.2 GB weights are not downloaded in CI);
+# the real-weight HF alignment tests are marked `slow` and run locally: `uv run pytest -m slow`.
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true   # caches downloaded wheels keyed on uv.lock (torch is large)
+
+      # Same Python and exact versions as local / Modal: .python-version + uv.lock.
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Run tests
+        run: uv run pytest -v

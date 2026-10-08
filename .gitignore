@@ -27,3 +27,6 @@ hf_cache/
 .DS_Store
 .vscode/
 .idea/
+
+# Claude Code: local instructions, not part of the project
+/CLAUDE.md
